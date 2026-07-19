@@ -8,6 +8,7 @@ import os
 import shutil
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from textwrap import dedent
 from threading import Lock
 from typing import Any
 
@@ -52,8 +53,13 @@ DECISION_STYLE = {
 }
 
 
+def _render_html(markup: str) -> None:
+    """Render trusted app-owned markup without Streamlit's lazy HTML component."""
+    st.markdown(dedent(markup).strip(), unsafe_allow_html=True)
+
+
 def _page_styles() -> None:
-    st.html(
+    _render_html(
         """
         <style>
         .stApp { background: #f7f8fa; color: #132238; }
@@ -113,7 +119,7 @@ def _page_styles() -> None:
 
 
 def _hero() -> None:
-    st.html(
+    _render_html(
         """
         <section class="gf-hero">
           <div class="gf-eyebrow">INTERPRETABLE AMR RESEARCH PROTOTYPE</div>
@@ -179,7 +185,7 @@ def _summary_table(results: list[dict[str, Any]]) -> None:
 def _render_result(result: dict[str, Any]) -> None:
     label, css_class, icon = DECISION_STYLE[result["prediction"]]
     name = html.escape(result["display_name"])
-    st.html(
+    _render_html(
         f"""
         <div class="gf-result-header">
           <div><span class="gf-result-name">{name}</span><br>
@@ -278,7 +284,7 @@ def _workflow() -> None:
     ]
     for column, (title, description) in zip(columns, steps, strict=True):
         with column:
-            st.html(
+            _render_html(
                 f'<div class="gf-step"><strong>{title}</strong>'
                 f"<span>{description}</span></div>"
             )
@@ -322,7 +328,7 @@ def main() -> None:
 
     left, right = st.columns([1.65, 1], gap="large")
     with left:
-        st.html('<div class="gf-section-title">Analyze an assembled genome</div>')
+        _render_html('<div class="gf-section-title">Analyze an assembled genome</div>')
         st.caption("Upload a nucleotide FASTA for the configured E. coli workflow (maximum 25 MB).")
         uploaded = st.file_uploader(
             "Genome FASTA",
@@ -351,7 +357,7 @@ def main() -> None:
                     selected_antibiotic,
                 )
     with right:
-        st.html('<div class="gf-section-title">Instant demo gallery</div>')
+        _render_html('<div class="gf-section-title">Instant demo gallery</div>')
         st.caption(
             "Three precomputed genomes showcase different decisions immediately. "
             "Demo buttons always display both antibiotics."

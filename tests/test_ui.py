@@ -8,10 +8,24 @@ from streamlit.testing.v1 import AppTest
 import app as ui
 
 
-def test_custom_markup_uses_streamlit_html_renderer() -> None:
+def test_custom_markup_avoids_lazy_streamlit_html_renderer(monkeypatch) -> None:
     source = (Path(__file__).resolve().parents[1] / "app.py").read_text(encoding="utf-8")
-    assert "unsafe_allow_html" not in source
-    assert source.count("st.html(") >= 6
+    assert "st.html(" not in source
+
+    rendered: list[tuple[str, bool]] = []
+    monkeypatch.setattr(
+        ui.st,
+        "markdown",
+        lambda body, unsafe_allow_html=False: rendered.append((body, unsafe_allow_html)),
+    )
+    ui._render_html("""
+        <section class="test">
+          <strong>Rendered</strong>
+        </section>
+    """)
+    assert rendered == [
+        ('<section class="test">\n  <strong>Rendered</strong>\n</section>', True)
+    ]
 
 
 def test_hosted_upload_removes_derived_cache(monkeypatch, tmp_path: Path) -> None:
@@ -31,8 +45,8 @@ def test_streamlit_app_initial_view_renders_without_error() -> None:
     app_path = Path(__file__).resolve().parents[1] / "app.py"
     app = AppTest.from_file(str(app_path)).run(timeout=30)
     assert not app.exception
-    assert not any("<style>" in element.value for element in app.markdown)
-    assert not any('class="gf-hero"' in element.value for element in app.markdown)
+    assert any(element.value.startswith("<style>") for element in app.markdown)
+    assert any(element.value.startswith('<section class="gf-hero">') for element in app.markdown)
     assert app.selectbox[0].value == "All supported antibiotics"
     assert any(button.label == "Run prediction" for button in app.button)
     demo_labels = [button.label for button in app.button if button.label.startswith("Run demo")]
