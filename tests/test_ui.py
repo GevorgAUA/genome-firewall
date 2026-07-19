@@ -8,6 +8,12 @@ from streamlit.testing.v1 import AppTest
 import app as ui
 
 
+def test_streamlit_uploader_has_no_lazy_axios_chunk() -> None:
+    assert ui.st.__version__ == "1.36.0"
+    static_root = Path(ui.st.__file__).resolve().parent / "static"
+    assert not list(static_root.rglob("axios.*.js"))
+
+
 def test_custom_markup_avoids_lazy_streamlit_html_renderer(monkeypatch) -> None:
     source = (Path(__file__).resolve().parents[1] / "app.py").read_text(encoding="utf-8")
     assert "st.html(" not in source
