@@ -1,8 +1,24 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 from streamlit.testing.v1 import AppTest
+
+import app as ui
+
+
+def test_hosted_upload_removes_derived_cache(monkeypatch, tmp_path: Path) -> None:
+    cache_root = tmp_path / "inference"
+    cache_root.mkdir()
+    (cache_root / "derived.tsv").write_text("derived", encoding="utf-8")
+    monkeypatch.setattr(ui, "EPHEMERAL_INFERENCE", True)
+    monkeypatch.setattr(ui, "INFERENCE_CACHE_ROOT", cache_root)
+    monkeypatch.setattr(ui, "predict_genome", lambda *args, **kwargs: [{"ok": True}])
+
+    uploaded = SimpleNamespace(name="sample.fna", getvalue=lambda: b">sample\nACGT\n")
+    assert ui._run_uploaded(uploaded, None) == [{"ok": True}]
+    assert not cache_root.exists()
 
 
 def test_streamlit_app_initial_view_renders_without_error() -> None:

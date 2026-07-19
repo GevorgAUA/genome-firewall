@@ -4,8 +4,11 @@ from __future__ import annotations
 
 import html
 import json
+import os
+import shutil
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from threading import Lock
 from typing import Any
 
 import pandas as pd
@@ -17,6 +20,12 @@ from genome_firewall.predict import WARNING, predict_cohort_sample, predict_geno
 PROJECT_ROOT = Path(__file__).resolve().parent
 CONFIG_PATH = PROJECT_ROOT / "configs" / "mvp.yaml"
 MAX_UPLOAD_BYTES = 25 * 1024 * 1024
+ANALYSIS_LOCK = Lock()
+EPHEMERAL_INFERENCE = os.environ.get(
+    "GENOME_FIREWALL_EPHEMERAL_INFERENCE",
+    "0",
+).strip().casefold() in {"1", "true", "yes"}
+INFERENCE_CACHE_ROOT = PROJECT_ROOT / "data" / "amrfinder" / "inference"
 
 DEMO_SAMPLES = (
     {
@@ -130,11 +139,19 @@ def _run_uploaded(uploaded: Any, antibiotic: str | None) -> list[dict[str, Any]]
     with TemporaryDirectory(prefix="genome_firewall_") as directory:
         fasta_path = Path(directory) / f"uploaded{suffix}"
         fasta_path.write_bytes(uploaded.getvalue())
-        return predict_genome(
-            fasta_path,
-            antibiotic,
-            config_path=CONFIG_PATH,
-        )
+        # AMRFinder is CPU-heavy. Serialize hosted jobs to avoid exhausting the
+        # small Space and to prevent duplicate uploads racing on cached outputs.
+        with ANALYSIS_LOCK:
+            try:
+                return predict_genome(
+                    fasta_path,
+                    antibiotic,
+                    config_path=CONFIG_PATH,
+                    timeout_seconds=300,
+                )
+            finally:
+                if EPHEMERAL_INFERENCE:
+                    shutil.rmtree(INFERENCE_CACHE_ROOT, ignore_errors=True)
 
 
 def _summary_table(results: list[dict[str, Any]]) -> None:
@@ -361,10 +378,16 @@ def main() -> None:
                         config,
                         None,
                     )
-        st.info(
-            "A new FASTA normally takes tens of seconds on this machine; repeat files use "
-            "cached annotation."
-        )
+        if EPHEMERAL_INFERENCE:
+            st.info(
+                "A new FASTA normally takes tens of seconds. Hosted uploads and derived "
+                "reports are deleted immediately after prediction."
+            )
+        else:
+            st.info(
+                "A new FASTA normally takes tens of seconds on this machine; repeat files use "
+                "cached annotation."
+            )
 
     results = st.session_state.get("prediction_results")
     if results:

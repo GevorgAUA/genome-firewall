@@ -1,3 +1,14 @@
+---
+title: Genome Firewall
+emoji: "🧬"
+colorFrom: red
+colorTo: blue
+sdk: docker
+app_port: 7860
+suggested_hardware: cpu-basic
+license: mit
+---
+
 # Genome Firewall
 
 [![CI](https://github.com/GevorgAUA/genome-firewall/actions/workflows/ci.yml/badge.svg)](https://github.com/GevorgAUA/genome-firewall/actions/workflows/ci.yml)
@@ -6,6 +17,8 @@
 
 Genome Firewall is an interpretable, uncertainty-aware research prototype that predicts
 antibiotic-resistance phenotypes from an assembled *Escherichia coli* genome FASTA.
+
+**[Open the live Genome Firewall demo](https://huggingface.co/spaces/GevorgAUA/genome-firewall)**
 
 > **Research prototype only. Not for clinical use. Confirm every prediction with
 > validated laboratory antimicrobial susceptibility testing.**

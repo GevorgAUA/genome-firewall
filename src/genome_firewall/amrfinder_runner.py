@@ -7,6 +7,7 @@ import csv
 import json
 import os
 import re
+import shutil
 import subprocess
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -76,6 +77,27 @@ def _conda_prefix(config: LoadedConfig) -> list[str]:
         str(settings["conda_environment"]),
         str(settings["executable"]),
     ]
+
+
+def command_prefix(config: LoadedConfig) -> list[str]:
+    """Resolve AMRFinder through Conda locally or directly in a container."""
+
+    execution = os.environ.get(
+        "GENOME_FIREWALL_AMRFINDER_EXECUTION",
+        "conda",
+    ).strip().casefold()
+    if execution == "conda":
+        return _conda_prefix(config)
+    if execution != "direct":
+        raise ValueError(
+            "GENOME_FIREWALL_AMRFINDER_EXECUTION must be 'conda' or 'direct'"
+        )
+
+    executable = str(config.values["amrfinder"]["executable"])
+    resolved = shutil.which(executable)
+    if resolved is None:
+        raise FileNotFoundError(f"AMRFinder executable not found in PATH: {executable}")
+    return [resolved]
 
 
 def _manifest_items(config: LoadedConfig) -> list[AnnotationItem]:
@@ -247,7 +269,7 @@ def run_batch(
     force: bool,
     timeout_seconds: int,
 ) -> dict[str, Any]:
-    prefix = _conda_prefix(config)
+    prefix = command_prefix(config)
     items = _manifest_items(config)
     if sample_id is not None:
         items = [item for item in items if item.genome_id == sample_id]

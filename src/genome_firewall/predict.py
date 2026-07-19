@@ -16,9 +16,9 @@ import joblib
 
 from genome_firewall.amrfinder_runner import (
     AnnotationItem,
-    _conda_prefix,
     _run_one,
     annotation_paths,
+    command_prefix,
     valid_amrfinder_tsv,
 )
 from genome_firewall.config import LoadedConfig, load_config
@@ -244,7 +244,7 @@ def predict_genome(
     try:
         _run_one(
             config,
-            _conda_prefix(config),
+            command_prefix(config),
             item,
             force=False,
             timeout_seconds=timeout_seconds,

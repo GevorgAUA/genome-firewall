@@ -4,13 +4,16 @@ import tempfile
 import unittest
 from collections import Counter
 from pathlib import Path
+from unittest.mock import patch
 
 from genome_firewall.amrfinder_runner import (
     AnnotationItem,
     build_command,
+    command_prefix,
     parse_version_output,
     valid_amrfinder_tsv,
 )
+from genome_firewall.config import load_config
 from genome_firewall.dataset import Candidate, select_and_split
 from genome_firewall.download_fastas import (
     DownloadItem,
@@ -82,6 +85,20 @@ Database version: 2026-05-15.1
         self.assertIn("--mutation_all", command)
         self.assertNotIn("--plus", command)
         self.assertEqual(command[command.index("-O") + 1], "Escherichia")
+
+    def test_container_runtime_resolves_amrfinder_directly(self) -> None:
+        config = load_config("configs/mvp.yaml")
+        with (
+            patch.dict(
+                "os.environ",
+                {"GENOME_FIREWALL_AMRFINDER_EXECUTION": "direct"},
+            ),
+            patch(
+                "genome_firewall.amrfinder_runner.shutil.which",
+                return_value="/usr/local/bin/amrfinder",
+            ),
+        ):
+            self.assertEqual(command_prefix(config), ["/usr/local/bin/amrfinder"])
 
     def test_amrfinder_tsv_validation_accepts_header_only(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
