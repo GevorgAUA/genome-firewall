@@ -8,6 +8,15 @@ from streamlit.testing.v1 import AppTest
 import app as ui
 
 
+def test_hosted_launcher_preserves_xsrf_with_iframe_cookie() -> None:
+    import hosted_streamlit
+
+    assert hosted_streamlit.server.TORNADO_SETTINGS["xsrf_cookie_kwargs"] == {
+        "samesite": "None",
+        "secure": True,
+    }
+
+
 def test_streamlit_uploader_has_no_lazy_axios_chunk() -> None:
     assert ui.st.__version__ == "1.36.0"
     static_root = Path(ui.st.__file__).resolve().parent / "static"
