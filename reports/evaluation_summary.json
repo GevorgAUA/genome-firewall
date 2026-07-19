@@ -1,0 +1,100 @@
+{
+  "antibiotics": {
+    "ampicillin": {
+      "artifact_hashes_before_evaluation": {
+        "calibrator_joblib_sha256": "59449de0427f40f5c58a5b265fd430d381e4dd390328f354c4a359733a4bc2b1",
+        "feature_names_json_sha256": "847d871d114476c6fd82391f0f361e10663797b7e1e37c66d6e8ebdd93d7d5b9",
+        "metadata_json_sha256": "add3577bdb706136035df7038dd71fda4d00c2575cf3210eda63939cc998238a",
+        "model_joblib_sha256": "1023c4830aadb10096eb1f4986e26a1f7df3d24d0dea57e21938dcadbcd9fb92",
+        "thresholds_json_sha256": "b0ba491e9abcd531a749889cd59725e38c63691b99fe2d4d6fee87c1fbe80221"
+      },
+      "metrics": {
+        "antibiotic": "ampicillin",
+        "auroc": 0.951388888888889,
+        "balanced_accuracy": 0.9166666666666666,
+        "brier_score": 0.07141651043959032,
+        "called_accuracy": 0.9411764705882353,
+        "called_accuracy_wilson_95": {
+          "lower": 0.7301796936242461,
+          "upper": 0.9895395990150025
+        },
+        "called_samples": 17,
+        "f1": 0.9166666666666666,
+        "fail_threshold": 0.7272522596849083,
+        "likely_to_fail_calls": 12,
+        "likely_to_fail_precision": 0.9166666666666666,
+        "likely_to_fail_precision_wilson_95": {
+          "lower": 0.646120088858883,
+          "upper": 0.9851349055950829
+        },
+        "likely_to_work_calls": 5,
+        "likely_to_work_precision": 1.0,
+        "likely_to_work_precision_wilson_95": {
+          "lower": 0.5655175352168251,
+          "upper": 1.0
+        },
+        "no_call_rate": 0.2916666666666667,
+        "no_call_samples": 7,
+        "pr_auc": 0.947585978835979,
+        "resistant_recall": 0.9166666666666666,
+        "resistant_samples": 12,
+        "susceptible_recall": 0.9166666666666666,
+        "susceptible_samples": 12,
+        "test_samples": 24,
+        "work_threshold": 0.15465531142271882
+      },
+      "reliability_plot": "reliability_ampicillin.png"
+    },
+    "ciprofloxacin": {
+      "artifact_hashes_before_evaluation": {
+        "calibrator_joblib_sha256": "de1b211c2b37c6c69cd71f2ef207319f4d886e2a64b6f3363c95fa9fba730383",
+        "feature_names_json_sha256": "847d871d114476c6fd82391f0f361e10663797b7e1e37c66d6e8ebdd93d7d5b9",
+        "metadata_json_sha256": "f5f0fc6b52720ae0ab8f57241a7eadb30c8af469ded54afe58b542f5e74d34eb",
+        "model_joblib_sha256": "96946ea18c16eeb5433d9b44492291af24d63695c0984b5659e3561ffc671600",
+        "thresholds_json_sha256": "c86d32f1d90dc29dd6d5a585c87f30f95990d566079750aee0dab9ac4dde2c3d"
+      },
+      "metrics": {
+        "antibiotic": "ciprofloxacin",
+        "auroc": 0.9791666666666666,
+        "balanced_accuracy": 0.9166666666666667,
+        "brier_score": 0.06615666023687539,
+        "called_accuracy": 0.9166666666666666,
+        "called_accuracy_wilson_95": {
+          "lower": 0.741511978067893,
+          "upper": 0.9768411847029567
+        },
+        "called_samples": 24,
+        "f1": 0.9090909090909091,
+        "fail_threshold": 0.5385640576903952,
+        "likely_to_fail_calls": 10,
+        "likely_to_fail_precision": 1.0,
+        "likely_to_fail_precision_wilson_95": {
+          "lower": 0.7224672001371107,
+          "upper": 0.9999999999999999
+        },
+        "likely_to_work_calls": 14,
+        "likely_to_work_precision": 0.8571428571428571,
+        "likely_to_work_precision_wilson_95": {
+          "lower": 0.6005862050302965,
+          "upper": 0.9599060787285351
+        },
+        "no_call_rate": 0.0,
+        "no_call_samples": 0,
+        "pr_auc": 0.9833333333333334,
+        "resistant_recall": 0.8333333333333334,
+        "resistant_samples": 12,
+        "susceptible_recall": 1.0,
+        "susceptible_samples": 12,
+        "test_samples": 24,
+        "work_threshold": 0.46613562725980695
+      },
+      "reliability_plot": "reliability_ciprofloxacin.png"
+    }
+  },
+  "evaluated_at_utc": "2026-07-19T10:56:03.560711+00:00",
+  "evaluation_scope": "frozen_probability_model_and_thresholds_before_target_gate",
+  "evaluation_split": "test",
+  "models_or_thresholds_changed_during_evaluation": false,
+  "small_sample_warning": "Empirical metrics are based on 24 test genomes per antibiotic; use the included Wilson intervals and do not interpret results as clinical validation.",
+  "test_genomes_per_antibiotic": 24
+}

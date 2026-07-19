@@ -1,0 +1,96 @@
+{
+  "antibiotics": {
+    "ampicillin": {
+      "artifact_validation": {
+        "calibration_probability_max": 0.9955528068020059,
+        "calibration_probability_min": 0.0532344720403402,
+        "coefficient_shape": [
+          1,
+          115
+        ],
+        "reload_succeeded": true
+      },
+      "artifacts": "models/ampicillin",
+      "calibration_class_counts": {
+        "resistant": 12,
+        "susceptible": 12
+      },
+      "thresholds": {
+        "fail": {
+          "calls": 10,
+          "correct_calls": 10,
+          "empirical_precision": 1.0,
+          "source": "calibration",
+          "threshold": 0.7272522596849083
+        },
+        "fallback_reason": null,
+        "minimum_calibration_calls": 5,
+        "probability_definition": "probability_of_resistant_phenotype",
+        "target_empirical_precision": 0.95,
+        "uncertain": {
+          "lower_exclusive": 0.15465531142271882,
+          "upper_exclusive": 0.7272522596849083
+        },
+        "work": {
+          "calls": 6,
+          "correct_calls": 6,
+          "empirical_precision": 1.0,
+          "source": "calibration",
+          "threshold": 0.15465531142271882
+        }
+      },
+      "training_class_counts": {
+        "resistant": 56,
+        "susceptible": 56
+      }
+    },
+    "ciprofloxacin": {
+      "artifact_validation": {
+        "calibration_probability_max": 0.9993112391583461,
+        "calibration_probability_min": 0.0033482940747616933,
+        "coefficient_shape": [
+          1,
+          115
+        ],
+        "reload_succeeded": true
+      },
+      "artifacts": "models/ciprofloxacin",
+      "calibration_class_counts": {
+        "resistant": 12,
+        "susceptible": 12
+      },
+      "thresholds": {
+        "fail": {
+          "calls": 12,
+          "correct_calls": 12,
+          "empirical_precision": 1.0,
+          "source": "calibration",
+          "threshold": 0.5385640576903952
+        },
+        "fallback_reason": null,
+        "minimum_calibration_calls": 5,
+        "probability_definition": "probability_of_resistant_phenotype",
+        "target_empirical_precision": 0.95,
+        "uncertain": {
+          "lower_exclusive": 0.46613562725980695,
+          "upper_exclusive": 0.5385640576903952
+        },
+        "work": {
+          "calls": 12,
+          "correct_calls": 12,
+          "empirical_precision": 1.0,
+          "source": "calibration",
+          "threshold": 0.46613562725980695
+        }
+      },
+      "training_class_counts": {
+        "resistant": 56,
+        "susceptible": 56
+      }
+    }
+  },
+  "feature_count": 115,
+  "feature_names_sha256": "81249fc21d49c1409109314b4d502cf614e7bc14e9a8c9757853ec409f0d6aa4",
+  "test_split_used": false,
+  "trained_at_utc": "2026-07-19T10:45:02.533499+00:00"
+}

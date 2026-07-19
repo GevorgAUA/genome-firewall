@@ -1,0 +1,24 @@
+{
+  "fail": {
+    "calls": 10,
+    "correct_calls": 10,
+    "empirical_precision": 1.0,
+    "source": "calibration",
+    "threshold": 0.7272522596849083
+  },
+  "fallback_reason": null,
+  "minimum_calibration_calls": 5,
+  "probability_definition": "probability_of_resistant_phenotype",
+  "target_empirical_precision": 0.95,
+  "uncertain": {
+    "lower_exclusive": 0.15465531142271882,
+    "upper_exclusive": 0.7272522596849083
+  },
+  "work": {
+    "calls": 6,
+    "correct_calls": 6,
+    "empirical_precision": 1.0,
+    "source": "calibration",
+    "threshold": 0.15465531142271882
+  }
+}

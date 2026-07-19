@@ -1,0 +1,7 @@
+* text=auto eol=lf
+
+*.fna text eol=lf
+*.tsv text eol=lf
+*.csv text eol=lf
+*.png binary
+*.joblib binary

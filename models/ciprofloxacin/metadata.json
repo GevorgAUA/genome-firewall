@@ -1,0 +1,26 @@
+{
+  "antibiotic": "ciprofloxacin",
+  "calibration_class_counts": {
+    "resistant": 12,
+    "susceptible": 12
+  },
+  "calibration_intercept": -0.19810340140677035,
+  "calibration_method": "platt_on_held_out_calibration_split",
+  "calibration_samples": 24,
+  "calibration_slope": 1.513343048961056,
+  "display_name": "Ciprofloxacin",
+  "feature_count": 115,
+  "feature_names_sha256": "81249fc21d49c1409109314b4d502cf614e7bc14e9a8c9757853ec409f0d6aa4",
+  "model_intercept": -1.5582610062533,
+  "model_type": "logistic_regression",
+  "positive_class": "resistant",
+  "random_state": 42,
+  "sklearn_version": "1.9.0",
+  "test_split_used": false,
+  "trained_at_utc": "2026-07-19T10:45:02.533499+00:00",
+  "training_class_counts": {
+    "resistant": 56,
+    "susceptible": 56
+  },
+  "training_samples": 112
+}

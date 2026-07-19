@@ -1,0 +1,157 @@
+project:
+  name: genome-firewall
+  random_seed: 42
+  warning: >-
+    Research prototype only. Not for clinical use. Predictions must be confirmed
+    using validated laboratory antimicrobial susceptibility testing.
+
+scope:
+  species_name: Escherichia coli
+  taxon_id: "562"
+  amrfinder_organism: Escherichia
+  primary_antibiotics:
+    - ciprofloxacin
+    - ampicillin
+  stretch_antibiotics:
+    - trimethoprim/sulfamethoxazole
+
+dataset:
+  format: bv_brc
+  paths:
+    amr: data/PATRIC_genomes_AMR.txt
+    metadata: data/genome_metadata.tsv
+    summary: data/genome_summary.tsv
+  columns:
+    genome_id: genome_id
+    genome_name: genome_name
+    taxon_id: taxon_id
+    antibiotic: antibiotic
+    phenotype: resistant_phenotype
+    genome_length: genome_length
+    contigs: contigs
+    mlst: mlst
+    checkm_completeness: checkm_completeness
+    checkm_contamination: checkm_contamination
+  labels:
+    resistant: resistant
+    susceptible: susceptible
+    excluded:
+      - ""
+      - intermediate
+      - nonsusceptible
+      - reduced susceptibility
+      - susceptible-dose dependent
+    exclude_conflicting_genome_antibiotic_pairs: true
+    use_mic_only_rows: false
+
+cohort:
+  total_genomes: 160
+  require_labels_for_all_primary_antibiotics: true
+  joint_phenotype_groups:
+    - ciprofloxacin: resistant
+      ampicillin: resistant
+      count: 40
+    - ciprofloxacin: resistant
+      ampicillin: susceptible
+      count: 40
+    - ciprofloxacin: susceptible
+      ampicillin: resistant
+      count: 40
+    - ciprofloxacin: susceptible
+      ampicillin: susceptible
+      count: 40
+  selection_method: deterministic_hash
+  quality:
+    minimum_genome_length: 4000000
+    maximum_genome_length: 6500000
+    maximum_contigs: 500
+    minimum_checkm_completeness_when_available: 95.0
+    maximum_checkm_contamination_when_available: 5.0
+    require_fasta_available: true
+
+split:
+  method: stratified_by_joint_phenotype
+  train_fraction: 0.70
+  calibration_fraction: 0.15
+  test_fraction: 0.15
+  seed: 42
+  keep_genome_in_single_split: true
+  counts_per_joint_group:
+    train: 28
+    calibration: 6
+    test: 6
+
+paths:
+  normalized_metadata: data/normalized/metadata.csv
+  cohort_manifest: data/normalized/cohort_manifest.csv
+  fasta_dir: data/raw/fasta
+  amrfinder_dir: data/amrfinder
+  feature_dir: data/features
+  model_dir: models
+  reports_dir: reports
+
+downloads:
+  source: bv_brc_https_api
+  api_url: https://www.bv-brc.org/api/genome_sequence/
+  accept: application/dna+fasta
+  workers: 4
+  retries: 3
+
+amrfinder:
+  runtime: wsl
+  wsl_distribution: Ubuntu
+  conda_executable: $HOME/miniforge3/bin/conda
+  conda_environment: amrfinder
+  executable: amrfinder
+  organism: Escherichia
+  threads: 4
+  use_plus: false
+  write_mutation_all: true
+  skip_valid_cached_outputs: true
+  record_software_and_database_versions: true
+
+features:
+  scope: core
+  type: AMR
+  value_column: Element symbol
+  vocabulary_source_split: train
+  ignore_unseen_at_inference: true
+
+model:
+  type: logistic_regression
+  penalty: l2
+  C: 1.0
+  class_weight: balanced
+  solver: liblinear
+  max_iter: 5000
+  random_state: 42
+  calibration_method: platt
+  minimum_training_samples: 30
+  minimum_samples_per_class: 5
+
+decision:
+  target_precision: 0.95
+  default_fail_threshold: 0.80
+  default_work_threshold: 0.20
+  minimum_calls_for_threshold: 5
+
+antibiotics:
+  ciprofloxacin:
+    display_name: Ciprofloxacin
+    amrfinder_classes:
+      - QUINOLONE
+    amrfinder_subclasses:
+      - QUINOLONE
+    target_genes_any:
+      - gyrA
+      - gyrB
+      - parC
+      - parE
+  ampicillin:
+    display_name: Ampicillin
+    amrfinder_classes:
+      - BETA-LACTAM
+    amrfinder_subclasses:
+      - BETA-LACTAM
+    target_genes_any:
+      - ftsI

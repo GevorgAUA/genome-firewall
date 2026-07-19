@@ -1,0 +1,8 @@
+{
+  "database_directory": "/home/gevorg/miniforge3/envs/amrfinder/share/amrfinderplus/data/2026-05-15.1",
+  "database_version": "2026-05-15.1",
+  "organism": "Escherichia",
+  "recorded_at_utc": "2026-07-19T09:48:23.987402+00:00",
+  "software_version": "4.2.7",
+  "use_plus": false
+}
