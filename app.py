@@ -53,7 +53,7 @@ DECISION_STYLE = {
 
 
 def _page_styles() -> None:
-    st.markdown(
+    st.html(
         """
         <style>
         .stApp { background: #f7f8fa; color: #132238; }
@@ -108,13 +108,12 @@ def _page_styles() -> None:
             .gf-result-header { align-items: flex-start; flex-direction: column; }
         }
         </style>
-        """,
-        unsafe_allow_html=True,
+        """
     )
 
 
 def _hero() -> None:
-    st.markdown(
+    st.html(
         """
         <section class="gf-hero">
           <div class="gf-eyebrow">INTERPRETABLE AMR RESEARCH PROTOTYPE</div>
@@ -126,8 +125,7 @@ def _hero() -> None:
           <span class="gf-pill">Target-gated</span>
           <span class="gf-pill">Evidence-rich</span>
         </section>
-        """,
-        unsafe_allow_html=True,
+        """
     )
     st.warning(f"⚠️ {WARNING}")
 
@@ -181,15 +179,14 @@ def _summary_table(results: list[dict[str, Any]]) -> None:
 def _render_result(result: dict[str, Any]) -> None:
     label, css_class, icon = DECISION_STYLE[result["prediction"]]
     name = html.escape(result["display_name"])
-    st.markdown(
+    st.html(
         f"""
         <div class="gf-result-header">
           <div><span class="gf-result-name">{name}</span><br>
           <span class="gf-muted">Probability of resistant phenotype</span></div>
           <span class="gf-badge {css_class}">{icon} {label}</span>
         </div>
-        """,
-        unsafe_allow_html=True,
+        """
     )
     probability = result["p_resistant"]
     if probability is None:
@@ -280,10 +277,11 @@ def _workflow() -> None:
         ("04 · Safeguard", "Target gates and uncertainty prevent unsafe calls."),
     ]
     for column, (title, description) in zip(columns, steps, strict=True):
-        column.markdown(
-            f'<div class="gf-step"><strong>{title}</strong><span>{description}</span></div>',
-            unsafe_allow_html=True,
-        )
+        with column:
+            st.html(
+                f'<div class="gf-step"><strong>{title}</strong>'
+                f"<span>{description}</span></div>"
+            )
 
 
 def _validation_snapshot() -> None:
@@ -324,10 +322,7 @@ def main() -> None:
 
     left, right = st.columns([1.65, 1], gap="large")
     with left:
-        st.markdown(
-            '<div class="gf-section-title">Analyze an assembled genome</div>',
-            unsafe_allow_html=True,
-        )
+        st.html('<div class="gf-section-title">Analyze an assembled genome</div>')
         st.caption("Upload a nucleotide FASTA for the configured E. coli workflow (maximum 25 MB).")
         uploaded = st.file_uploader(
             "Genome FASTA",
@@ -356,10 +351,7 @@ def main() -> None:
                     selected_antibiotic,
                 )
     with right:
-        st.markdown(
-            '<div class="gf-section-title">Instant demo gallery</div>',
-            unsafe_allow_html=True,
-        )
+        st.html('<div class="gf-section-title">Instant demo gallery</div>')
         st.caption(
             "Three precomputed genomes showcase different decisions immediately. "
             "Demo buttons always display both antibiotics."
